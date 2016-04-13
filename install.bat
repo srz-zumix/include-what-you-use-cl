@@ -1,5 +1,11 @@
 @echo off
 
+where include-what-you-use.exe >NUL 2>NUL
+if errorlevel 1 (
+	@echo please set PATH include-what-you-use
+	goto failed
+)
+
 if not exist %~dp0\cl.exe call :build
 if errorlevel 1 goto failed
 

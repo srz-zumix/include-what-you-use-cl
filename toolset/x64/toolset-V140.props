@@ -6,7 +6,8 @@
     <LLVMInstallDir>$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\LLVM\LLVM)</LLVMInstallDir>
     <LLVMInstallDir Condition="'$(LLVMInstallDir)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\LLVM\LLVM)</LLVMInstallDir>
     <ExecutablePath>$(IWYUCL_ROOT);$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>$(LLVMInstallDir)\lib\clang\3.8\lib\windows;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="Exists('$(LLVMInstallDir)\lib\clang\3.8')">$(LLVMInstallDir)\lib\clang\3.8\lib\windows;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="Exists('$(LLVMInstallDir)\lib\clang\3.7')">$(LLVMInstallDir)\lib\clang\3.7\lib\windows;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
