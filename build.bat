@@ -10,3 +10,4 @@ if errorlevel 1 (
 
 :build
 msbuild cl.csproj
+if errorlevel 1 pause
