@@ -43,7 +43,7 @@ goto :EOF
 
 :platform
 SET PLATFORM=%1
-for %%v in (V140) do (
+for %%v in (V140 V120 V110) do (
 	call :vs %%v
 	if errorlevel 1 exit /b 1
 )
@@ -58,11 +58,20 @@ exit /b 1
 
 :install
 if not exist %D%\Include-What-You-Use mkdir %D%\Include-What-You-Use
-if errorlevel 1 exit /b 1
-copy toolset\%PLATFORM%\toolset-%1.props %D%\Include-What-You-Use\toolset.props
-if errorlevel 1 exit /b 1
-copy toolset\%PLATFORM%\toolset-%1.targets %D%\Include-What-You-Use\toolset.targets
-if errorlevel 1 exit /b 1
+SET FNAME_=toolset
+if exist toolset\%PLATFORM%\%FNAME_%-%1.props (
+	copy toolset\%PLATFORM%\%FNAME_%-%1.props %D%\Include-What-You-Use\%FNAME_%.props
+	if errorlevel 1 exit /b 1
+	copy toolset\%PLATFORM%\%FNAME_%-%1.targets %D%\Include-What-You-Use\%FNAME_%.targets
+	if errorlevel 1 exit /b 1
+)
+SET FNAME_=Microsoft.Cpp.Win32.Include-What-You-Use
+if exist toolset\%PLATFORM%\%FNAME_%-%1.props (
+	copy toolset\%PLATFORM%\%FNAME_%-%1.props %D%\Include-What-You-Use\%FNAME_%.props
+	if errorlevel 1 exit /b 1
+	copy toolset\%PLATFORM%\%FNAME_%-%1.targets %D%\Include-What-You-Use\%FNAME_%.targets
+	if errorlevel 1 exit /b 1
+)
 
 exit /b 0
 

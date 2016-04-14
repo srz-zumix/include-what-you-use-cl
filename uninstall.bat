@@ -29,7 +29,7 @@ goto :EOF
 
 :platform
 SET PLATFORM=%1
-for %%v in (V140) do (
+for %%v in (V140 V120 V110) do (
 	call :vs %%v
 	if errorlevel 1 exit /b 1
 )
@@ -45,6 +45,8 @@ exit /b 1
 :uninstall
 if exist %D%\Include-What-You-Use\toolset.props   del %D%\Include-What-You-Use\toolset.props
 if exist %D%\Include-What-You-Use\toolset.targets del %D%\Include-What-You-Use\toolset.targets
+if exist %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.props   del %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.props
+if exist %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.targets del %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.targets
 if exist %D%\Include-What-You-Use rmdir %D%\Include-What-You-Use
 
 exit /b 0
