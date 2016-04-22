@@ -9,6 +9,8 @@ Include-What-You-Use-CL is Visual Studio toolset for Include-What-You-Use
 
 ## Install
 
+> git clone https://github.com/srz-zumix/include-what-you-use-cl.git
+> cd include-what-you-use-cl
 > install.bat
 
 ## Uninstall
