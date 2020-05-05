@@ -15,6 +15,15 @@ cd include-what-you-use-cl
 install.bat
 ```
 
+## Usage
+
+1. Project Settings > Platform toolset  
+Select "Include-What-You-Use"
+![toolset](images/toolset.png)
+1. Compile
+1. Get Include-What-You-Use result  
+![output](images/output.png)
+
 ## Uninstall
 
 ```

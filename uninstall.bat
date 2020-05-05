@@ -13,6 +13,7 @@ echo Uninstalling MSVC integration...
 cd /d %~dp0
 
 for %%p in (x64 Win32) do (
+	echo %%p
 	call :platform %%p
 	if errorlevel 1 goto failed
 )
@@ -33,16 +34,31 @@ for %%v in (V140 V120 V110) do (
 	call :vs %%v
 	if errorlevel 1 exit /b 1
 )
+for %%v in ("[16.0,17.0)" "[15.0,16.0)") do (
+	call :vswhere %%v
+	if errorlevel 1 exit /b 1
+)
 exit /b 0
 
 :vs
 SET D="%ProgramFiles%\MSBuild\Microsoft.Cpp\v4.0\%1\Platforms\%PLATFORM%\PlatformToolsets"
-if exist %D% goto uninstall
+if exist %D% call :uninstall
 SET D="%ProgramFiles(x86)%\MSBuild\Microsoft.Cpp\v4.0\%1\Platforms\%PLATFORM%\PlatformToolsets"
-if exist %D% goto uninstall
-exit /b 1
+if exist %D% call :uninstall
+exit /b 0
+
+:vswhere
+for /f "tokens=*" %%x in ( 'vswhere.bat -version %1 -requires Microsoft.Component.MSBuild -find MSBuild\**\%PLATFORM%\PlatformToolsets' ) do (
+	if exist %%x call :vswhere_uninstall "%%x"
+)
+exit /b 0
+
+:vswhere_uninstall
+SET D=%1
+goto uninstall
 
 :uninstall
+echo uninstall to %D% ...
 if exist %D%\Include-What-You-Use\toolset.props   del %D%\Include-What-You-Use\toolset.props
 if exist %D%\Include-What-You-Use\toolset.targets del %D%\Include-What-You-Use\toolset.targets
 if exist %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.props   del %D%\Include-What-You-Use\Microsoft.Cpp.Win32.Include-What-You-Use.props

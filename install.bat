@@ -9,7 +9,7 @@ if errorlevel 1 (
 if not exist %~dp0\cl.exe call :build
 if errorlevel 1 goto failed
 
-whoami /PRIV | find "SeLoadDriverPrivilege" >NUL
+whoami /PRIV 2>NUL | find "SeLoadDriverPrivilege" >NUL 2>NUL
 if not errorlevel 1 goto start
 
 @echo runas
@@ -27,6 +27,7 @@ if not exist cl.exe (
 )
 
 for %%p in (x64 Win32) do (
+	echo %%p
 	call :platform %%p
 	if errorlevel 1 goto failed
 )
@@ -47,16 +48,31 @@ for %%v in (V140 V120 V110) do (
 	call :vs %%v
 	if errorlevel 1 exit /b 1
 )
+for %%v in ("[16.0,17.0)" "[15.0,16.0)") do (
+	call :vswhere %%v
+	if errorlevel 1 exit /b 1
+)
 exit /b 0
 
 :vs
 SET D="%ProgramFiles%\MSBuild\Microsoft.Cpp\v4.0\%1\Platforms\%PLATFORM%\PlatformToolsets"
-if exist %D% goto install
+if exist %D% call :install %1
 SET D="%ProgramFiles(x86)%\MSBuild\Microsoft.Cpp\v4.0\%1\Platforms\%PLATFORM%\PlatformToolsets"
-if exist %D% goto install
-exit /b 1
+if exist %D% call :install %1
+exit /b 0
+
+:vswhere
+for /f "tokens=*" %%x in ( 'vswhere.bat -version %1 -requires Microsoft.Component.MSBuild -find MSBuild\**\%PLATFORM%\PlatformToolsets' ) do (
+	if exist %%x call :vswhere_install "%%x" %1
+)
+exit /b 0
+
+:vswhere_install
+SET D=%1
+call :install %2
 
 :install
+echo install to %D% ...
 if not exist %D%\Include-What-You-Use mkdir %D%\Include-What-You-Use
 SET FNAME_=toolset
 if exist toolset\%PLATFORM%\%FNAME_%-%1.props (
@@ -72,7 +88,6 @@ if exist toolset\%PLATFORM%\%FNAME_%-%1.props (
 	copy toolset\%PLATFORM%\%FNAME_%-%1.targets %D%\Include-What-You-Use\%FNAME_%.targets
 	if errorlevel 1 exit /b 1
 )
-
 exit /b 0
 
 :build
